@@ -2,10 +2,12 @@ import express from "express";
 import { Request, Response, NextFunction } from "express";
 import expressSession from "express-session";
 import path from "path";
+import jsonfile from "jsonfile"
+
 
 const app = express();
 
-app.get("/", function (req: Request, res: Response) {
+app.get("/query", function (req: Request, res: Response) {
   const name = req.query.name;
   const location = req.query.location;
   res.end(`Name is ${name}, Location is ${location}`);
@@ -19,6 +21,9 @@ app.get("/name/:name/loc/:location", (req, res) => {
   console.log("GET REQUEST 2")
 });
 
+
+//app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 
 
@@ -60,6 +65,13 @@ declare module "express-session" {
 }
 app.use(express.static("public"));
 
+app.get("/users", async (req, res) => {
+  const users = await jsonfile.readFile(path.join(__dirname, "users.json"));
+  res.json(users);
+});
+
+
+
 
 const PORT = 8070;
 
@@ -73,6 +85,7 @@ app.listen(PORT, () => {
 
 
 app.use((req, res) => {
+  //带./开头的参数 path.resolve('./a') 返回的是当前绝对路径拼接现在的参数/Users/xxxx/a
   res.sendFile(path.resolve("./public/404.html"));
   console.log("404 not founddddddd")
 });
