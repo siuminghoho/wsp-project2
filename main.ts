@@ -1,120 +1,53 @@
-// WSP009
+import express from "express";
+import { Request, Response } from "express";
+import path from "path";
+import expressSession from "express-session";
+import { isLoggedIn } from "./utils/guard";
+import { router } from "./router";
 import { Client } from "pg";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const client = new Client({
+declare module "express-session" {
+  interface SessionData {
+    counter: number;
+    userId?: number;
+    username?: string;
+  }
+}
+
+export const pgClient = new Client({
   database: process.env.DB_NAME,
   user: process.env.DB_USERNAME,
-  password: process.env.DB_PASSWORD
+  password: process.env.DB_PASSWORD,
 });
-
-client.connect();
-////////////
-
-
-import express from "express";
-import { Request, Response, NextFunction } from "express";
-// expressSession is a middleware package that we will use to manage our sessions
-import expressSession from "express-session";
-import fs from 'fs';
-import path from "path";
+pgClient.connect();
 
 const app = express();
-const PORT = 8080;
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Sample user data (for demonstration purposes)
-// const users = [
-//   { username: 'admin', password: 'admin' },
-//   { username: 'user', password: 'user' },
-// ];
-
-
-
+app.use(express.json());
 
 app.use(
   expressSession({
-    secret: "demo demo demo",
+    secret: "any secret, something, anything",
     resave: true,
     saveUninitialized: true,
   })
 );
 
-declare module "express-session" {
-  interface SessionData {
-    name?: string;
-  }
-}
+app.use(router);
 
-app.get("/index", function (req: Request, res: Response) {
-  res.end("Hello World2");
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "images")));
+
+app.use(isLoggedIn, express.static(path.join(__dirname, "protected")));
+
+app.use((req: Request, res: Response) => {
+  res.sendFile(path.join(__dirname, "404.html"));
 });
 
-
-
-app.get("/", function (req: Request, res: Response) {
-  res.end("Hello World");
-});
-
-
-
-export const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  console.log("Middleware: This will be logged before handling the request.");
-  next(); // Call next() to pass control to the next middleware in the chain
-};
-
-
-
-
+const PORT = 8080;
 app.listen(PORT, () => {
-  console.log(`Listening at http://localhost:${PORT}/`);
-
+  console.log(`listening to http://localhost:${PORT}`);
 });
-
-function readUserJSON(): Promise<any> {
-  return new Promise((resolve, reject) => {
-    const filePath =path.join(__dirname,'private','user.json')
-    fs.readFile(filePath,'utf-8',(err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        try {
-          const users = JSON.parse(data);
-          resolve(users);
-        }
-        catch (parseError) {
-          reject(parseError);
-
-        }
-      }
-    })
-  });
-}
-
-async function main(){
-  try{
-    const users = await readUserJSON();
-    console.log(users)
-  }catch(e){
-    console.log('Error reading JSON file', e);
-  }
-}
-
-main();
-
-
-
-
-
-//404 not found
-
-
-
-app.use((req, res) => {
-  res.sendFile(path.resolve("./public/404.html"));
-});
-
-

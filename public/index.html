@@ -9,33 +9,45 @@
   <body>
     <div class="container">
       <div class="portal">
-        <div class="text-memo" contenteditable="true"></div>
-        <form id="memo-form">
+        <!-- <div class="text-memo" contenteditable="true"></div> -->
+
+        <div id="memo-form">
+          <input
+            class="text-memo"
+            contenteditable="true"
+            type="text"
+            name="content"
+            id="memo-content"
+          />
           <input type="file" name="photo" id="photo" />
-          <input type="submit" value="提交" />
-        </form>
+          <button id="memo-submit">提交</button>
+        </div>
+
         <div class="title">連儂管理員專用</div>
-        <form id="login-form">
+        <div class="welcome"></div>
+        <form id="login-form" action="/login" method="POST">
           <input
             type="text"
             name="username"
             id="username"
             placeholder="User Name"
+            value="gordon@tecky.io"
           />
           <input
             type="password"
             name="password"
             id="password"
             placeholder="Password"
+            value="tecky"
           />
           <input type="submit" value="提交" />
         </form>
         <a href="#">Google Login</a>
       </div>
-      <div class="memos">
-        <div class="memo"></div>
-        <div class="memo"></div>
+      <div class="memos" id="memo-space">
       </div>
     </div>
+
+    <script src="./js/index.js"></script>
   </body>
 </html>
