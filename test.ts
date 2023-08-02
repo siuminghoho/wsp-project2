@@ -6,7 +6,7 @@ import jsonfile from "jsonfile"
 
 
 const app = express();
-
+//search by query method
 app.get("/query", function (req: Request, res: Response) {
   const name = req.query.name;
   const location = req.query.location;
@@ -14,6 +14,9 @@ app.get("/query", function (req: Request, res: Response) {
   console.log("GET REQUEST")
 });
 
+
+
+//search by param method
 app.get("/name/:name/loc/:location", (req, res) => {
   const name = req.params.name;
   const location = req.params.location;
@@ -89,3 +92,5 @@ app.use((req, res) => {
   res.sendFile(path.resolve("./public/404.html"));
   console.log("404 not founddddddd")
 });
+
+
