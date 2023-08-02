@@ -16,6 +16,7 @@ declare module "express-session" {
   }
 }
 
+//for DBconnection process
 export const pgClient = new Client({
   database: process.env.DB_NAME,
   user: process.env.DB_USERNAME,
@@ -51,3 +52,6 @@ const PORT = 8080;
 app.listen(PORT, () => {
   console.log(`listening to http://localhost:${PORT}`);
 });
+
+
+

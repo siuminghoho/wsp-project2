@@ -36,4 +36,3 @@ async function handleLogin(event){
 }
 
 document.getElementById('loginForm').addEventListener('submit', handleLogin);
-

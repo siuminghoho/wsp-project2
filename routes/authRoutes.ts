@@ -4,6 +4,8 @@ import { pgClient } from "../main";
 
 export const authRoute = Router();
 
+
+
 authRoute.post("/login", async (req: Request, res: Response) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -27,3 +29,4 @@ authRoute.post("/login", async (req: Request, res: Response) => {
     res.status(500).json({ msg: "internal server error" });
   }
 });
+
